@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const Scaffold(
-          body:  SafeArea(child: Center( child: Word(value: 'Hello, World'))),
-        )
+        body: SafeArea(child: Center(child: Word(value: 'Hello, World'))),
+      ),
     );
   }
 }
