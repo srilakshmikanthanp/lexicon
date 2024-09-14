@@ -1,4 +1,4 @@
-package com.example.lexicon
+package com.srilakshmikanthanp.lexicon
 
 import io.flutter.embedding.android.FlutterActivity
 
