@@ -1,17 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ui';
 
-import 'package:flutter/services.dart';
-import 'package:lexicon/constants/constants.dart';
+import 'package:lexicon/utility/functions.dart';
 
 abstract class Filter extends Stream<String> {
   /// Async Where implementation of where
   Stream<String> asyncWhere(Future<bool> Function(String) test) async* {
-    await for (final element in this) {
-      if (await test(element)) {
-        yield element;
-      }
+    await for (final word in this) {
+      if (await test(word)) yield word;
     }
   }
 
@@ -40,14 +36,8 @@ class _Filter extends Filter {
   /// an Stream Controller used in Filter
   final StreamController<String> _controller = StreamController<String>();
 
-  /// Load Json data from Assets
-  Future<Map<String, dynamic>> _loadStopWords() async {
-    final jsonData = await rootBundle.loadString(await appStopWordsAsset());
-    return jsonDecode(jsonData) as Map<String, dynamic>;
-  }
-
   /// Cache of stop words
-  Map<String, dynamic>? stopWords;
+  List<String>? stopWords;
 
   /// Constructor
   _Filter(super.locale);
@@ -65,8 +55,7 @@ class _Filter extends Filter {
   /// Is Stop Word
   @override
   Future<bool> isStopWord(String word) async {
-    stopWords ??= await _loadStopWords();
-    var lang = stopWords![locale.languageCode] as List<String>;
-    return lang.contains(word);
+    stopWords ??= await loadStopWordsForLocale(locale);
+    return stopWords!.contains(word);
   }
 }
