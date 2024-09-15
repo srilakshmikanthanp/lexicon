@@ -31,3 +31,7 @@ Future<String> appDonatePage() async {
 Future<String> appHomePage() async {
   return 'https://github.com/srilakshmikanthanp/lexicon';
 }
+
+Future<String> appStopWordsAsset() async {
+  return 'assets/json/stopwords.json';
+}
