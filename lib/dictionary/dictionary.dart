@@ -1,8 +1,8 @@
-import 'dart:ui';
 import 'dart:convert';
+import 'dart:ui';
 
-import 'package:lexicon/type/definition.dart';
 import 'package:http/http.dart' as http;
+import 'package:lexicon/types/definition.dart';
 
 abstract class Dictionary {
   /// Define of the word as per Dictionary
@@ -16,12 +16,12 @@ abstract class Dictionary {
 
   /// Factory Method to create
   factory Dictionary.build(Locale locale) {
-    return _FreeDict(locale);
+    return ApiDict(locale);
   }
 }
 
 /// An Implementation of Dictionary
-class _FreeDict extends Dictionary {
+class ApiDict extends Dictionary {
   List<Interpretation> _interpretation(List<Map<String, dynamic>> list) {
     List<Interpretation> interpretations = [];
 
@@ -63,7 +63,7 @@ class _FreeDict extends Dictionary {
     return 'api/v2/entries/${locale.languageCode}/$word';
   }
 
-  _FreeDict(super.locale);
+  ApiDict(super.locale);
 
   @override
   Future<Definition> define(String word) async {
@@ -77,7 +77,6 @@ class _FreeDict extends Dictionary {
     return Definition(
         phonetics: _phonetics(phonetics),
         word: word,
-        meaning: _meaning(meanings)
-    );
+        meaning: _meaning(meanings));
   }
 }
