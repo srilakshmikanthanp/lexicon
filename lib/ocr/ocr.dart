@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 abstract class Ocr {
   /// Extract the Words from the Image
-  Future<List<String>> processImage(File image);
+  Future<List<String>> processImage(XFile image);
 
   /// Constructor
   Ocr();
@@ -29,7 +30,7 @@ class MlKitOcr extends Ocr {
   }
 
   @override
-  Future<List<String>> processImage(File image) async {
+  Future<List<String>> processImage(XFile image) async {
     final inputImage = InputImage.fromFilePath(image.path);
     final recognizedText = await _textRecognizer.processImage(inputImage);
     final List<String> result = [];
