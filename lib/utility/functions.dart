@@ -9,7 +9,7 @@ import 'package:path_provider/path_provider.dart';
 
 /// Loads stops word for given Locale
 Future<List<String>> loadStopWordsForLocale(Locale locale) async {
-  final jsonData = await rootBundle.loadString(await appStopWordsAsset());
+  final jsonData = await rootBundle.loadString(Constants.instance().appStopWordsAsset);
   final json = jsonDecode(jsonData) as Map<String, dynamic>;
   final langCode = locale.languageCode;
 

@@ -1,37 +1,60 @@
 import 'package:package_info_plus/package_info_plus.dart';
 
-Future<String> appMajorVersion() async {
-  return (await version()).split(".")[0];
-}
+class Constants {
+  static final Constants _instance = Constants._internal();
+  late final PackageInfo _packageInfo;
 
-Future<String> appMinorVersion() async {
-  return (await version()).split(".")[1];
-}
+  factory Constants.instance() {
+    return _instance;
+  }
 
-Future<String> appPatchVersion() async {
-  return (await version()).split(".")[2];
-}
+  Constants._internal();
 
-Future<String> version() async {
-  return (await PackageInfo.fromPlatform()).version;
-}
+  Future<void> initialize() async {
+    _packageInfo = await PackageInfo.fromPlatform();
+  }
 
-Future<String> appName() async {
-  return (await PackageInfo.fromPlatform()).appName;
-}
+  String get appMajorVersion {
+    return version.split(".")[0];
+  }
 
-Future<String> appIssuesPage() async {
-  return 'https://github.com/srilakshmikanthanp/lexicon/issues';
-}
+  String get appMinorVersion {
+    return version.split(".")[1];
+  }
 
-Future<String> appDonatePage() async {
-  return 'https://donate.srilakshmikanthanp.com/';
-}
+  String get appPatchVersion {
+    return version.split(".")[2];
+  }
 
-Future<String> appHomePage() async {
-  return 'https://github.com/srilakshmikanthanp/lexicon';
-}
+  String get version {
+    return _packageInfo.version;
+  }
 
-Future<String> appStopWordsAsset() async {
-  return 'assets/json/stopwords.json';
+  String get appName {
+    return _packageInfo.appName;
+  }
+
+  String get appIssuesPage {
+    return 'https://github.com/srilakshmikanthanp/lexicon/issues';
+  }
+
+  String get appDonatePage {
+    return 'https://donate.srilakshmikanthanp.com/';
+  }
+
+  String get appHomePage {
+    return 'https://github.com/srilakshmikanthanp/lexicon';
+  }
+
+  String get appStopWordsAsset {
+    return 'assets/json/stopwords.json';
+  }
+
+  String get appLogoAsset {
+    return 'assets/images/logo.png';
+  }
+
+  String get appAppSlogan {
+    return "Reading a Physical book! Searching for Meaning Frequently! Then Lexicon is for You!";
+  }
 }
