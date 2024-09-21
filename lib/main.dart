@@ -1,26 +1,31 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:lexicon/ui/gui/components/picker.dart';
+import 'package:layout/layout.dart';
+import 'package:lexicon/settings/settings.dart';
+import 'package:lexicon/ui/gui/lexicon.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Application extends StatelessWidget {
+  const Application({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Example Image',
-      home: Scaffold(
-          appBar: AppBar(
-            title: Text("Example"),
+    return Layout(
+      child: MaterialApp(
+        title: 'Lexicon',
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
+        home: const Scaffold(
+          body: SafeArea(
+            child: Lexicon(),
           ),
-          body: Center(
-            child: Picker(onPicked: (files) => {log(files.length.toString())},),
-          )),
+        ),
+      ),
     );
   }
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Settings.instance().initialize();
+  runApp(const Application());
 }
