@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:layout/layout.dart';
 import 'package:lexicon/ui/gui/screens/aboutus/aboutus.dart';
+import 'package:lexicon/ui/gui/screens/settings/settings.dart';
 
 class Lexicon extends StatefulWidget {
   const Lexicon({super.key});
@@ -35,7 +36,7 @@ class _Dashboard extends State<Lexicon> {
 
     final screens = [
       const Text(""),
-      const Text(""),
+      const Settings(),
       const AboutUs(),
     ];
 

@@ -1,0 +1,84 @@
+import 'package:flutter/material.dart';
+import 'package:lexicon/constants/constants.dart';
+import 'package:lexicon/settings/settings.dart' as prefs;
+import 'package:provider/provider.dart';
+
+class Settings extends StatelessWidget {
+  const Settings({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var lexiconContent = Column(children: [
+      Image.asset(
+        Constants.instance().appLogoAsset,
+        width: 60,
+        height: 60,
+      ),
+      const SizedBox(height: 10),
+      Text(Constants.instance().appName),
+      Text(Constants.instance().version),
+      const SizedBox(height: 5),
+      Text(
+        "Let's Make ${Constants.instance().appName} to Work in your Way",
+        textAlign: TextAlign.center,
+      ),
+    ]);
+
+    var canFilterWords = Row(
+      children: [
+        const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Filter words"),
+            Text(
+              "Filters Stop Words",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+            )
+          ],
+        ),
+        const Spacer(),
+        Consumer<prefs.Settings>(
+          builder: (context, settings, child) {
+            return Switch(
+              onChanged: (value) async => settings.setCanFilterWords(value),
+              value: settings.canFilterWords,
+            );
+          },
+        ),
+      ],
+    );
+
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // A Horizontal gap from the top and the content
+            const SizedBox(height: 50),
+
+            // logo, version
+            SizedBox(
+              width: double.infinity,
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: lexiconContent,
+                ),
+              ),
+            ),
+
+            // A Small Gap
+            const SizedBox(height: 50),
+
+            // Can filter words
+            canFilterWords
+          ],
+        ),
+      ),
+    );
+  }
+}

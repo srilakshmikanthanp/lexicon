@@ -21,6 +21,14 @@ class AboutUs extends StatelessWidget {
     return "Version ${Constants.instance().version}";
   }
 
+  void _showLicenses(BuildContext context) {
+    showLicensePage(
+      applicationVersion: Constants.instance().version,
+      applicationName: Constants.instance().appName,
+      context: context,
+    );
+  }
+
   Widget _buildActionIcon({
     required BuildContext context,
     required IconData icon,
@@ -48,8 +56,9 @@ class AboutUs extends StatelessWidget {
         width: 60,
       ),
       const SizedBox(height: 10),
+      Text(Constants.instance().appName),
       Text(_getVersion()),
-      const SizedBox(height: 30),
+      const SizedBox(height: 10),
       Text(
         Constants.instance().appAppSlogan,
         textAlign: TextAlign.center,
@@ -111,7 +120,7 @@ class AboutUs extends StatelessWidget {
 
             // License
             GestureDetector(
-              onTap: () => showLicensePage(context: context),
+              onTap: () => _showLicenses(context),
               child: const SizedBox(
                 width: double.infinity,
                 child: Card(

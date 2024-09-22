@@ -1,27 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Settings {
-  /// Map of Key to List of Listeners for the property
-  Map<String, List<ValueSetter<String>>> listeners = {};
-
-  /// remove the listener
-  bool removeListener(String key, ValueSetter<String> fn) {
-    return listeners.putIfAbsent(key, () => []).remove(fn);
-  }
-
-  /// add a listener
-  void addListener(String key, ValueSetter<String> fn) {
-    listeners.putIfAbsent(key, () => []).add(fn);
-  }
-
-  /// notify all the listeners
-  void _notifyListeners(String key) {
-    listeners.putIfAbsent(key, () => []).forEach((fn) {
-      fn(key);
-    });
-  }
-
+class Settings extends ChangeNotifier {
   /// Instance of the Settings
   static final Settings _instance = Settings._internal();
 
@@ -55,7 +35,7 @@ class Settings {
   /// setter
   Future<void> setCanFilterWords(bool value) async {
     return _prefs.setBool(prefCanFilterWords, value).then((_) {
-      _notifyListeners(prefCanFilterWords);
+      notifyListeners();
     });
   }
 }
