@@ -43,3 +43,17 @@ Future<File> getAssetAsFile(String assetPath) async {
   // Return the File Loaded
   return tempFile;
 }
+
+/// Groups words, Don't pass empty words
+Future<Map<String, List<String>>> groupWords({
+  required List<String> words,
+  required String Function(String) map,
+}) async {
+  var result = {} as Map<String, List<String>>;
+
+  for(var word in words) {
+    result.putIfAbsent(map(word[0]), () => []).add(word);
+  }
+
+  return result;
+}
