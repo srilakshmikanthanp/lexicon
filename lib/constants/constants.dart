@@ -57,4 +57,8 @@ class Constants {
   String get appAppSlogan {
     return "Reading a Physical book! Searching for Meaning Frequently! Then Lexicon is for You!";
   }
+
+  List<String> get supportedLanguages {
+    return ["en"];
+  }
 }

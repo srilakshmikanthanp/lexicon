@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Page extends StatelessWidget {
-  const Page({super.key, required this.words});
-
-  final List<String> words;
+  const Page({super.key});
 
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    return Text("");
   }
 }

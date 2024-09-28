@@ -51,6 +51,39 @@ class Settings extends StatelessWidget {
       ],
     );
 
+    var language = Row(
+      children: [
+        const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Language"),
+            Text(
+              "Lexicon Language",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+            )
+          ],
+        ),
+        const Spacer(),
+        Consumer<prefs.Settings>(
+          builder: (context, settings, child) {
+            return DropdownButton(
+              items: Constants.instance().supportedLanguages.map((val) {
+                return DropdownMenuItem(value: val, child: Text(val));
+              }).toList(),
+              onChanged: (String? value) {
+                if (value != null) settings.setLanguage(value);
+              },
+              padding: const EdgeInsets.all(10),
+              value: settings.language,
+            );
+          },
+        ),
+      ],
+    );
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -75,7 +108,10 @@ class Settings extends StatelessWidget {
             const SizedBox(height: 50),
 
             // Can filter words
-            canFilterWords
+            canFilterWords,
+
+            // Language of Books
+            language,
           ],
         ),
       ),

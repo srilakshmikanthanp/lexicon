@@ -10,12 +10,24 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Layout(
+    var lightThemeData = ThemeData.light(useMaterial3: true).copyWith(
+      appBarTheme: AppBarTheme(
+        backgroundColor: ThemeData.light(useMaterial3: true).colorScheme.onSurface
+      ),
+    );
+
+    var darkThemeData = ThemeData.dark(useMaterial3: true).copyWith(
+      appBarTheme: AppBarTheme(
+        backgroundColor: ThemeData.light(useMaterial3: true).colorScheme.onSurface
+      ),
+    );
+
+    return Layout(
       child: MaterialApp(
-        home: Scaffold(
-          body: SafeArea(
-            child: Lexicon(),
-          ),
+        darkTheme: darkThemeData,
+        theme: lightThemeData,
+        home: const SafeArea(
+          child: Lexicon(),
         ),
       ),
     );
@@ -26,6 +38,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Settings.instance().initialize();
   await Constants.instance().initialize();
+
   runApp(
     MultiProvider(
       providers: [

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +37,21 @@ class Settings extends ChangeNotifier {
   /// setter
   Future<void> setCanFilterWords(bool value) async {
     return _prefs.setBool(prefCanFilterWords, value).then((_) {
+      notifyListeners();
+    });
+  }
+
+  /// Preference language
+  static const String prefLanguage = "$_pref:language";
+
+  /// getter
+  String get language {
+    return _prefs.getString(prefLanguage) ?? 'en';
+  }
+
+  /// setter
+  Future<void> setLanguage(String value) async {
+    return _prefs.setString(prefLanguage, value).then((_) {
       notifyListeners();
     });
   }

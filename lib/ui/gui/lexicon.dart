@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:layout/layout.dart';
-import 'package:lexicon/ui/gui/screens/aboutus/aboutus.dart';
-import 'package:lexicon/ui/gui/screens/settings/settings.dart';
+import 'package:lexicon/ui/gui/screens/aboutus.dart';
+import 'package:lexicon/ui/gui/screens/read.dart';
+import 'package:lexicon/ui/gui/screens/settings.dart';
 
 class Lexicon extends StatefulWidget {
   const Lexicon({super.key});
@@ -11,7 +11,16 @@ class Lexicon extends StatefulWidget {
 }
 
 class _Dashboard extends State<Lexicon> {
-  Widget _smallWidget(BuildContext context) {
+  void _handleNavigation(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  int _selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
     final navigation = NavigationBar(
       onDestinationSelected: _handleNavigation,
       selectedIndex: _selectedIndex,
@@ -35,7 +44,7 @@ class _Dashboard extends State<Lexicon> {
     );
 
     final screens = [
-      const Text(""),
+      const Read(),
       const Settings(),
       const AboutUs(),
     ];
@@ -43,27 +52,7 @@ class _Dashboard extends State<Lexicon> {
     return Scaffold(
       bottomNavigationBar: navigation,
       body: screens[_selectedIndex],
+      resizeToAvoidBottomInset: false,
     );
-  }
-
-  Widget _largeWidget(BuildContext context) {
-    return _smallWidget(context);
-  }
-
-  void _handleNavigation(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  int _selectedIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    if (context.breakpoint > LayoutBreakpoint.md) {
-      return _largeWidget(context);
-    } else {
-      return _smallWidget(context);
-    }
   }
 }
