@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 
-class Word extends StatelessWidget {
-  const Word({super.key, required this.value, this.onClick});
+class Header extends StatelessWidget {
+  const Header({super.key, required this.header, this.onClick});
 
   final ValueSetter<String>? onClick;
-  final String value;
+  final String header;
 
   void _onClick() {
-    onClick?.call(value);
+    onClick?.call(header);
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).canvasColor,
+      ),
       width: double.infinity,
       child: TextButton(
         style: TextButton.styleFrom(
@@ -20,8 +23,8 @@ class Word extends StatelessWidget {
         ),
         onPressed: _onClick,
         child: Text(
-          style: Theme.of(context).textTheme.titleMedium,
-          value,
+          style: Theme.of(context).textTheme.headlineLarge,
+          header,
           textAlign: TextAlign.left,
         ),
       ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:layout/layout.dart';
 import 'package:lexicon/constants/constants.dart';
 import 'package:lexicon/settings/settings.dart';
+import 'package:lexicon/theme.dart' as theme;
 import 'package:lexicon/ui/gui/lexicon.dart';
 import 'package:provider/provider.dart';
 
@@ -10,22 +12,10 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lightThemeData = ThemeData.light(useMaterial3: true).copyWith(
-      appBarTheme: AppBarTheme(
-        backgroundColor: ThemeData.light(useMaterial3: true).colorScheme.onSurface
-      ),
-    );
-
-    var darkThemeData = ThemeData.dark(useMaterial3: true).copyWith(
-      appBarTheme: AppBarTheme(
-        backgroundColor: ThemeData.light(useMaterial3: true).colorScheme.onSurface
-      ),
-    );
-
     return Layout(
       child: MaterialApp(
-        darkTheme: darkThemeData,
-        theme: lightThemeData,
+        darkTheme: theme.darkTheme,
+        theme: theme.lightTheme,
         home: const SafeArea(
           child: Lexicon(),
         ),
@@ -36,14 +26,17 @@ class Application extends StatelessWidget {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(statusBarColor: theme.currentTheme.canvasColor),
+  );
+
   await Settings.instance().initialize();
-  await Constants.instance().initialize();
+  await Constants.initialize();
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => Settings.instance()),
-      ],
+    ChangeNotifierProvider(
+      create: (_) => Settings.instance(),
       child: const Application(),
     ),
   );

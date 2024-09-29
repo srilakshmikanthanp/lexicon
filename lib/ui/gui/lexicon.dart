@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:lexicon/ui/gui/screens/aboutus.dart';
-import 'package:lexicon/ui/gui/screens/read.dart';
-import 'package:lexicon/ui/gui/screens/settings.dart';
+import 'package:lexicon/models/read.dart' as models;
+import 'package:lexicon/ui/gui/screens/aboutus/aboutus.dart';
+import 'package:lexicon/ui/gui/screens/read/read.dart';
+import 'package:lexicon/ui/gui/screens/settings/settings.dart';
+import 'package:provider/provider.dart';
 
 class Lexicon extends StatefulWidget {
   const Lexicon({super.key});
 
   @override
-  State<StatefulWidget> createState() => _Dashboard();
+  State<StatefulWidget> createState() => _Lexicon();
 }
 
-class _Dashboard extends State<Lexicon> {
+class _Lexicon extends State<Lexicon> {
+  final PageStorageBucket _bucket = PageStorageBucket();
+  int _selectedIndex = 0;
+  final screens = const <Widget>[
+    Read(key: PageStorageKey<String>("read")),
+    Text(""),
+    Settings(key: PageStorageKey<String>("settings")),
+    AboutUs(key: PageStorageKey<String>("aboutus")),
+  ];
+
   void _handleNavigation(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
-
-  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +38,11 @@ class _Dashboard extends State<Lexicon> {
           selectedIcon: Icon(Icons.book),
           icon: Icon(Icons.book_outlined),
           label: 'Read',
+        ),
+        NavigationDestination(
+          selectedIcon: Icon(Icons.history),
+          icon: Icon(Icons.history_outlined),
+          label: 'History',
         ),
         NavigationDestination(
           selectedIcon: Icon(Icons.settings),
@@ -43,15 +57,17 @@ class _Dashboard extends State<Lexicon> {
       ],
     );
 
-    final screens = [
-      const Read(),
-      const Settings(),
-      const AboutUs(),
-    ];
-
     return Scaffold(
       bottomNavigationBar: navigation,
-      body: screens[_selectedIndex],
+      body: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (ctx) => models.Read()),
+        ],
+        child: PageStorage(
+          bucket: _bucket,
+          child: screens[_selectedIndex],
+        ),
+      ),
       resizeToAvoidBottomInset: false,
     );
   }

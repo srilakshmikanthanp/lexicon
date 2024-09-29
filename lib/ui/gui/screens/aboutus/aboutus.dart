@@ -6,25 +6,25 @@ class AboutUs extends StatelessWidget {
   const AboutUs({super.key});
 
   void _onIssueReport() async {
-    await launchUrl(Uri.parse(Constants.instance().appIssuesPage));
+    await launchUrl(Uri.parse(Constants.appIssuesPage));
   }
 
   void _onWebsiteOpen() async {
-    await launchUrl(Uri.parse(Constants.instance().appHomePage));
+    await launchUrl(Uri.parse(Constants.appHomePage));
   }
 
   void _onDonation() async {
-    await launchUrl(Uri.parse(Constants.instance().appDonatePage));
+    await launchUrl(Uri.parse(Constants.appDonatePage));
   }
 
   String _getVersion() {
-    return "Version ${Constants.instance().version}";
+    return "Version ${Constants.version}";
   }
 
   void _showLicenses(BuildContext context) {
     showLicensePage(
-      applicationVersion: Constants.instance().version,
-      applicationName: Constants.instance().appName,
+      applicationVersion: Constants.version,
+      applicationName: Constants.appName,
       context: context,
     );
   }
@@ -51,16 +51,16 @@ class AboutUs extends StatelessWidget {
   Widget build(BuildContext context) {
     var aboutUsContent = Column(children: [
       Image.asset(
-        Constants.instance().appLogoAsset,
+        Constants.appLogoAsset,
         height: 60,
         width: 60,
       ),
       const SizedBox(height: 10),
-      Text(Constants.instance().appName),
+      Text(Constants.appName),
       Text(_getVersion()),
       const SizedBox(height: 10),
       Text(
-        Constants.instance().appAppSlogan,
+        Constants.appAppSlogan,
         textAlign: TextAlign.center,
       ),
     ]);
@@ -86,53 +86,51 @@ class AboutUs extends StatelessWidget {
       ),
     ];
 
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // A Horizontal gap from the top and the content
-            const SizedBox(height: 50),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // A Horizontal gap from the top and the content
+          const SizedBox(height: 50),
 
-            // Card with logo, version, and description
-            SizedBox(
+          // Card with logo, version, and description
+          SizedBox(
+            width: double.infinity,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: aboutUsContent,
+              ),
+            ),
+          ),
+
+          // A Small Gap
+          const SizedBox(height: 50),
+
+          // Icons row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: actions,
+          ),
+
+          // A Small Gap
+          const SizedBox(height: 50),
+
+          // License
+          GestureDetector(
+            onTap: () => _showLicenses(context),
+            child: const SizedBox(
               width: double.infinity,
               child: Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: aboutUsContent,
+                  padding: EdgeInsets.all(12),
+                  child: Text("Open Sources Licenses"),
                 ),
               ),
             ),
-
-            // A Small Gap
-            const SizedBox(height: 50),
-
-            // Icons row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: actions,
-            ),
-
-            // A Small Gap
-            const SizedBox(height: 50),
-
-            // License
-            GestureDetector(
-              onTap: () => _showLicenses(context),
-              child: const SizedBox(
-                width: double.infinity,
-                child: Card(
-                  child: Padding(
-                    padding: EdgeInsets.all(12),
-                    child: Text("Open Sources Licenses"),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

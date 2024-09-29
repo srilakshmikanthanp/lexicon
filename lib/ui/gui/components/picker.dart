@@ -5,8 +5,13 @@ import 'package:image_picker/image_picker.dart';
 class Picker extends StatelessWidget {
   final ValueSetter<List<XFile>>? onPicked;
   final ImagePicker _picker = ImagePicker();
+  final Widget? child;
 
-  Picker({super.key, this.onPicked});
+  Picker({
+    super.key,
+    this.onPicked,
+    this.child
+  });
 
   Future<void> _pickImageFromCamera() async {
     var file = await _picker.pickImage(source: ImageSource.camera);
@@ -29,30 +34,32 @@ class Picker extends StatelessWidget {
   }
 
   Future<void> _pickImages(BuildContext context) async {
+    var actionSheet = CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+          child: const Text('Camera'),
+          onPressed: () {
+            // close the options modal
+            Navigator.of(context).pop();
+            // get image from camera
+            _pickImageFromCamera();
+          },
+        ),
+        CupertinoActionSheetAction(
+          child: const Text('Gallery'),
+          onPressed: () {
+            // close the options modal
+            Navigator.of(context).pop();
+            // get image from gallery
+            _pickImageFromGallery();
+          },
+        ),
+      ],
+    );
+
     showCupertinoModalPopup(
       context: context,
-      builder: (context) => CupertinoActionSheet(
-        actions: [
-          CupertinoActionSheetAction(
-            child: const Text('Camera'),
-            onPressed: () {
-              // close the options modal
-              Navigator.of(context).pop();
-              // get image from camera
-              _pickImageFromCamera();
-            },
-          ),
-          CupertinoActionSheetAction(
-            child: const Text('Gallery'),
-            onPressed: () {
-              // close the options modal
-              Navigator.of(context).pop();
-              // get image from gallery
-              _pickImageFromGallery();
-            },
-          ),
-        ],
-      ),
+      builder: (context) => actionSheet,
     );
   }
 
@@ -64,7 +71,7 @@ class Picker extends StatelessWidget {
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(20),
       ),
-      child: const Icon(
+      child: child ?? const Icon(
         Icons.camera,
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Pagination extends StatelessWidget {
   void Function()? _prevCallback() {
-    if(current == start) {
+    if(now == start) {
       return null;
     }
 
@@ -10,7 +10,7 @@ class Pagination extends StatelessWidget {
   }
 
   void Function()? _nextCallback() {
-    if(current == end) {
+    if(now == end) {
       return null;
     }
 
@@ -21,21 +21,21 @@ class Pagination extends StatelessWidget {
     super.key,
     required this.start,
     required this.end,
-    required this.current,
+    required this.now,
     this.onPrev,
     this.onNext,
   });
 
   final ValueSetter<int>? onPrev;
   final ValueSetter<int>? onNext;
-  final int current, start, end;
+  final int now, start, end;
 
   void _handlePrev() {
-    onPrev?.call(current - 1);
+    onPrev?.call(now - 1);
   }
 
   void _handleNext() {
-    onNext?.call(current + 1);
+    onNext?.call(now + 1);
   }
 
   @override
@@ -49,17 +49,19 @@ class Pagination extends StatelessWidget {
           ),
           onPressed: _prevCallback(),
           child: const Icon(
-            Icons.arrow_left,
+            Icons.arrow_back_ios_new,
           ),
         ),
-        Text("$current"),
+        Text("$now"),
+        const Text("/"),
+        Text("$end"),
         TextButton(
           style: TextButton.styleFrom(
             disabledIconColor: Colors.grey,
           ),
           onPressed: _nextCallback(),
           child: const Icon(
-            Icons.arrow_right,
+            Icons.arrow_forward_ios,
           ),
         ),
       ],

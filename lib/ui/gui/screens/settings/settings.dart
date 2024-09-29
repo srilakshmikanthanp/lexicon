@@ -10,16 +10,16 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     var lexiconContent = Column(children: [
       Image.asset(
-        Constants.instance().appLogoAsset,
+        Constants.appLogoAsset,
         width: 60,
         height: 60,
       ),
       const SizedBox(height: 10),
-      Text(Constants.instance().appName),
-      Text(Constants.instance().version),
+      Text(Constants.appName),
+      Text(Constants.version),
       const SizedBox(height: 5),
       Text(
-        "Let's Make ${Constants.instance().appName} to Work in your Way",
+        "Let's Make ${Constants.appName} to Work in your Way",
         textAlign: TextAlign.center,
       ),
     ]);
@@ -70,7 +70,7 @@ class Settings extends StatelessWidget {
         Consumer<prefs.Settings>(
           builder: (context, settings, child) {
             return DropdownButton(
-              items: Constants.instance().supportedLanguages.map((val) {
+              items: Constants.supportedLanguages.map((val) {
                 return DropdownMenuItem(value: val, child: Text(val));
               }).toList(),
               onChanged: (String? value) {
@@ -84,36 +84,34 @@ class Settings extends StatelessWidget {
       ],
     );
 
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // A Horizontal gap from the top and the content
-            const SizedBox(height: 50),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // A Horizontal gap from the top and the content
+          const SizedBox(height: 50),
 
-            // logo, version
-            SizedBox(
-              width: double.infinity,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: lexiconContent,
-                ),
+          // logo, version
+          SizedBox(
+            width: double.infinity,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: lexiconContent,
               ),
             ),
+          ),
 
-            // A Small Gap
-            const SizedBox(height: 50),
+          // A Small Gap
+          const SizedBox(height: 50),
 
-            // Can filter words
-            canFilterWords,
+          // Can filter words
+          canFilterWords,
 
-            // Language of Books
-            language,
-          ],
-        ),
+          // Language of Books
+          language,
+        ],
       ),
     );
   }

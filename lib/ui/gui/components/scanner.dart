@@ -6,10 +6,12 @@ import 'package:lexicon/ui/gui/components/picker.dart';
 class Scanner extends StatefulWidget {
   final ValueSetter<List<String>>? onScanned;
   final Ocr ocr = Ocr.build();
+  final Widget? child;
 
   Scanner({
     super.key,
     this.onScanned,
+    this.child,
   });
 
   @override
@@ -19,37 +21,40 @@ class Scanner extends StatefulWidget {
 }
 
 class _Scanner extends State<Scanner> {
-  Future<void> _processImages(List<XFile> images) async {
+  Future<void> _handlePicked(List<XFile> images) async {
     List<String> words = [];
+
+    setState(() {
+      isProcessing = true;
+    });
 
     for (var img in images) {
       words.addAll(await widget.ocr.processImage(img));
     }
 
     widget.onScanned?.call(words);
-  }
 
-  void _handlePicked(List<XFile> images) {
-    setState(() { isLoading = true; });
-    _processImages(images).then((_) {
-      setState(() {
-        isLoading = false;
-      });
+    setState(() {
+      isProcessing = false;
     });
   }
 
-  bool isLoading = false;
+  bool isProcessing = false;
 
   @override
   Widget build(BuildContext context) {
+    var progress = const CircularProgressIndicator();
+    var picker = Picker(
+      onPicked: (values) async => _handlePicked(values),
+      child: widget.child,
+    );
+
     return Container(
       decoration: const BoxDecoration(
         shape: BoxShape.circle,
       ),
       padding: const EdgeInsets.all(16),
-      child: isLoading
-          ? const CircularProgressIndicator()
-          : Picker(onPicked: _handlePicked),
+      child: isProcessing ? progress : picker,
     );
   }
 }
