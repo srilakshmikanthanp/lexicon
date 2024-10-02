@@ -95,7 +95,7 @@ class Settings extends StatelessWidget {
           // logo, version
           SizedBox(
             width: double.infinity,
-            child: Card(
+            child: Card.filled(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: lexiconContent,

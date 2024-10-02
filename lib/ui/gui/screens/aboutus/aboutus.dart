@@ -97,7 +97,7 @@ class AboutUs extends StatelessWidget {
           // Card with logo, version, and description
           SizedBox(
             width: double.infinity,
-            child: Card(
+            child: Card.filled(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: aboutUsContent,
@@ -122,7 +122,7 @@ class AboutUs extends StatelessWidget {
             onTap: () => _showLicenses(context),
             child: const SizedBox(
               width: double.infinity,
-              child: Card(
+              child: Card.filled(
                 child: Padding(
                   padding: EdgeInsets.all(12),
                   child: Text("Open Sources Licenses"),

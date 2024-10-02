@@ -10,13 +10,13 @@ class Picker extends StatelessWidget {
   Picker({
     super.key,
     this.onPicked,
-    this.child
+    this.child,
   });
 
   Future<void> _pickImageFromCamera() async {
     var file = await _picker.pickImage(source: ImageSource.camera);
 
-    if(file == null) {
+    if (file == null) {
       return;
     }
 
@@ -26,7 +26,7 @@ class Picker extends StatelessWidget {
   Future<void> _pickImageFromGallery() async {
     var images = await _picker.pickMultiImage();
 
-    if(images.isEmpty) {
+    if (images.isEmpty) {
       return;
     }
 
@@ -34,27 +34,28 @@ class Picker extends StatelessWidget {
   }
 
   Future<void> _pickImages(BuildContext context) async {
+    var actionCamera = CupertinoActionSheetAction(
+      child: const Text('Camera'),
+      onPressed: () {
+        // close the options modal
+        Navigator.of(context).pop();
+        // get image from camera
+        _pickImageFromCamera();
+      },
+    );
+
+    var actionGallery = CupertinoActionSheetAction(
+      child: const Text('Gallery'),
+      onPressed: () {
+        // close the options modal
+        Navigator.of(context).pop();
+        // get image from gallery
+        _pickImageFromGallery();
+      },
+    );
+
     var actionSheet = CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(
-          child: const Text('Camera'),
-          onPressed: () {
-            // close the options modal
-            Navigator.of(context).pop();
-            // get image from camera
-            _pickImageFromCamera();
-          },
-        ),
-        CupertinoActionSheetAction(
-          child: const Text('Gallery'),
-          onPressed: () {
-            // close the options modal
-            Navigator.of(context).pop();
-            // get image from gallery
-            _pickImageFromGallery();
-          },
-        ),
-      ],
+      actions: [actionCamera, actionGallery],
     );
 
     showCupertinoModalPopup(
@@ -71,9 +72,7 @@ class Picker extends StatelessWidget {
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(20),
       ),
-      child: child ?? const Icon(
-        Icons.camera,
-      ),
+      child: child ?? const Icon(Icons.camera),
     );
   }
 }

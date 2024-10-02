@@ -24,10 +24,12 @@ class Pagination extends StatelessWidget {
     required this.now,
     this.onPrev,
     this.onNext,
+    this.onClick,
   });
 
   final ValueSetter<int>? onPrev;
   final ValueSetter<int>? onNext;
+  final VoidCallback? onClick;
   final int now, start, end;
 
   void _handlePrev() {
@@ -52,9 +54,16 @@ class Pagination extends StatelessWidget {
             Icons.arrow_back_ios_new,
           ),
         ),
-        Text("$now"),
-        const Text("/"),
-        Text("$end"),
+        GestureDetector(
+          onTap: onClick,
+          child: Row(
+            children: [
+              Text("$now"),
+              const Text("/"),
+              Text("$end"),
+            ],
+          ),
+        ),
         TextButton(
           style: TextButton.styleFrom(
             disabledIconColor: Colors.grey,

@@ -1,47 +1,65 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lexicon/filters/filters.dart';
-import 'package:lexicon/models/read.dart' as models;
-import 'package:lexicon/settings/settings.dart';
+import 'package:lexicon/models/read/read.dart' as models;
 import 'package:lexicon/ui/gui/components/pagination.dart';
 import 'package:lexicon/ui/gui/components/scanner.dart';
+import 'package:lexicon/ui/gui/dialogs/dialogs.dart';
 import 'package:lexicon/ui/gui/screens/read/page.dart' as ui;
-import 'package:lexicon/utility/extensions.dart';
 import 'package:provider/provider.dart';
 
 class Read extends StatelessWidget {
-  Future<void> _onScanned(
-    BuildContext ctx,
-    List<String> words,
-    models.Read read,
-  ) async {
-    Future<bool> canTakeWord(BuildContext ctx, String word) async {
-      var settings = Provider.of<Settings>(ctx, listen: false);
-      var filters = Filters.build(Locale(settings.language));
-      if (settings.canFilterWords && await filters.isStopWord(word)) {
-        return false;
-      } else if (await filters.isEmptyWord(word)) {
-        return false;
-      } else if (await filters.isNonWord(word)) {
-        return false;
-      } else {
-        return true;
-      }
-    }
+  Future<void> _onScanned(List<String> words, models.Read read) async {
+    return read.addPage(List<String>.from(words));
+  }
 
-    var result = await Stream.fromIterable(words)
-        .map((word) => word.toLowerCase())
-        .asyncWhere((word) => canTakeWord(ctx, word))
-        .toSet();
+  void _onPageClick(BuildContext context, models.Read read) {
+    var actionAddMore = CupertinoActionSheetAction(
+      child: const Text('Add more'),
+      onPressed: () async {
+        // close the options modal
+        Navigator.of(context).pop();
 
-    return read.addPage(models.Page.from(result));
+        // get words
+        var page = await showScanDialog(context);
+
+        // add words
+        if (page != null) {
+          read.merge(read.now, page);
+        }
+      },
+    );
+
+    var actionDelete = CupertinoActionSheetAction(
+      child: const Text('Delete'),
+      onPressed: () async {
+        // close the options modal
+        Navigator.of(context).pop();
+
+        var result = await showYesOrNoDialog(
+          context,
+          "Want to delete this Page",
+        );
+
+        if (result) {
+          read.delete(read.now);
+        }
+      },
+    );
+
+    var actionSheet = CupertinoActionSheet(
+      actions: [actionAddMore, actionDelete],
+    );
+
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => actionSheet,
+    );
   }
 
   const Read({super.key});
 
-  Widget _getWidget(models.Read read) {
-    var scanner = Consumer<models.Read>(builder: (ctx, read, child) {
-      return Scanner(onScanned: (res) async => _onScanned(ctx, res, read));
-    });
+  Widget _getWidget(BuildContext context, models.Read read) {
+    var scanner = Scanner(onScanned: (res) async => _onScanned(res, read));
 
     var text = const Text(
       style: TextStyle(color: Colors.grey),
@@ -50,7 +68,7 @@ class Read extends StatelessWidget {
 
     if (read.now != read.end) {
       return ui.Page(
-        words: read.pages[read.now],
+        words: read.getPage(read.now),
       );
     }
 
@@ -78,20 +96,21 @@ class Read extends StatelessWidget {
     );
 
     final pagination = Consumer<models.Read>(
-      builder: (context, read, child) {
+      builder: (ctx, read, child) {
         return Pagination(
           onPrev: (now) => read.now = now,
           onNext: (now) => read.now = now,
           start: read.start,
           end: read.end,
           now: read.now,
+          onClick: read.now != read.end ? () => _onPageClick(ctx, read) : null,
         );
       },
     );
 
     final widget = Consumer<models.Read>(
       builder: (ctx, read, child) {
-        return _getWidget(read);
+        return _getWidget(context, read);
       },
     );
 

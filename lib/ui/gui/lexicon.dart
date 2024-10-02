@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lexicon/models/read.dart' as models;
+import 'package:lexicon/models/read/read.dart' as models;
 import 'package:lexicon/ui/gui/screens/aboutus/aboutus.dart';
 import 'package:lexicon/ui/gui/screens/read/read.dart';
 import 'package:lexicon/ui/gui/screens/settings/settings.dart';
@@ -15,12 +15,6 @@ class Lexicon extends StatefulWidget {
 class _Lexicon extends State<Lexicon> {
   final PageStorageBucket _bucket = PageStorageBucket();
   int _selectedIndex = 0;
-  final screens = const <Widget>[
-    Read(key: PageStorageKey<String>("read")),
-    Text(""),
-    Settings(key: PageStorageKey<String>("settings")),
-    AboutUs(key: PageStorageKey<String>("aboutus")),
-  ];
 
   void _handleNavigation(int index) {
     setState(() {
@@ -57,16 +51,17 @@ class _Lexicon extends State<Lexicon> {
       ],
     );
 
+    const screens = [
+      Read(), Text(""), Settings(), AboutUs()
+    ];
+
     return Scaffold(
       bottomNavigationBar: navigation,
       body: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (ctx) => models.Read()),
         ],
-        child: PageStorage(
-          bucket: _bucket,
-          child: screens[_selectedIndex],
-        ),
+        child: screens[_selectedIndex]
       ),
       resizeToAvoidBottomInset: false,
     );
