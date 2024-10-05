@@ -5,7 +5,6 @@ import 'package:layout/layout.dart';
 import 'package:lexicon/constants/constants.dart';
 import 'package:lexicon/settings/settings.dart';
 import 'package:lexicon/ui/gui/lexicon.dart';
-import 'package:lexicon/utility/functions.dart';
 import 'package:provider/provider.dart';
 
 class Application extends StatefulWidget {

@@ -34,11 +34,6 @@ class _Lexicon extends State<Lexicon> {
           label: 'Read',
         ),
         NavigationDestination(
-          selectedIcon: Icon(Icons.history),
-          icon: Icon(Icons.history_outlined),
-          label: 'History',
-        ),
-        NavigationDestination(
           selectedIcon: Icon(Icons.settings),
           icon: Icon(Icons.settings_outlined),
           label: 'Settings',
@@ -52,14 +47,14 @@ class _Lexicon extends State<Lexicon> {
     );
 
     const screens = [
-      Read(), Text(""), Settings(), AboutUs()
+      Read(), Settings(), AboutUs()
     ];
 
     return Scaffold(
       bottomNavigationBar: navigation,
       body: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (ctx) => models.Read()),
+          ChangeNotifierProvider(create: (ctx) => models.Read.empty()),
         ],
         child: screens[_selectedIndex]
       ),

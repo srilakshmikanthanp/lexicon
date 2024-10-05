@@ -22,7 +22,7 @@ class Read extends StatelessWidget {
 
         // add words
         if (page != null) {
-          read.merge(read.now, page);
+          read.mergeToPage(read.now, page);
         }
       },
     );
@@ -39,13 +39,30 @@ class Read extends StatelessWidget {
         );
 
         if (result) {
-          read.delete(read.now);
+          read..deletePage(read.now)..goPrev();
+        }
+      },
+    );
+
+    var actionDeleteAll = CupertinoActionSheetAction(
+      child: const Text('Delete All'),
+      onPressed: () async {
+        // close the options modal
+        Navigator.of(context).pop();
+
+        var result = await showYesOrNoDialog(
+          context,
+          "Want to delete All Pages",
+        );
+
+        if (result) {
+          read..deleteAllPages()..goStart();
         }
       },
     );
 
     var actionSheet = CupertinoActionSheet(
-      actions: [actionAddMore, actionDelete],
+      actions: [actionAddMore, actionDelete, actionDeleteAll],
     );
 
     showCupertinoModalPopup(
@@ -144,8 +161,8 @@ class Read extends StatelessWidget {
     final pagination = Consumer<models.Read>(
       builder: (ctx, read, child) {
         return Pagination(
-          onPrev: (now) => read.now = now,
-          onNext: (now) => read.now = now,
+          onPrev: (now) => read.goPrev(),
+          onNext: (now) => read.goNext(),
           start: read.start,
           end: read.end,
           now: read.now,
