@@ -22,19 +22,7 @@ class Read with ChangeNotifier {
   List<String> getPage(int index) {
     return List.unmodifiable(_pages[index]);
   }
-
-  /// Search State
-  String _search = "";
-
-  String get search {
-    return _search;
-  }
-
-  set search(String value) {
-    _search = value;
-    notifyListeners();
-  }
-
+  
   /// Pagination state
   final int start = 0;
 

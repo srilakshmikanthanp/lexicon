@@ -5,13 +5,11 @@ import 'package:lexicon/ui/gui/components/pagination.dart';
 import 'package:lexicon/ui/gui/components/scanner.dart';
 import 'package:lexicon/ui/gui/dialogs/dialogs.dart';
 import 'package:lexicon/ui/gui/screens/read/page.dart' as ui;
+import 'package:lexicon/utility/extensions.dart';
+import 'package:lexicon/utility/functions.dart';
 import 'package:provider/provider.dart';
 
 class Read extends StatelessWidget {
-  Future<void> _onScanned(List<String> words, models.Read read) async {
-    return read.addPage(List<String>.from(words));
-  }
-
   void _onPageClick(BuildContext context, models.Read read) {
     var actionAddMore = CupertinoActionSheetAction(
       child: const Text('Add more'),
@@ -58,8 +56,70 @@ class Read extends StatelessWidget {
 
   const Read({super.key});
 
-  Widget _getWidget(BuildContext context, models.Read read) {
-    var scanner = Scanner(onScanned: (res) async => _onScanned(res, read));
+  Widget _buildSearchBar(BuildContext context, SearchController controller) {
+    return SearchBar(
+      padding: const WidgetStatePropertyAll<EdgeInsets>(
+        EdgeInsets.symmetric(horizontal: 16),
+      ),
+      onTap: () => controller.openView(),
+      controller: controller,
+      hintText: 'Search Word',
+      onChanged: (value) => controller.openView(),
+      leading: const Icon(
+        Icons.search_rounded,
+      ),
+    );
+  }
+
+  Future<List<ListTile>> _suggestions(
+    BuildContext ctx,
+    SearchController controller,
+    models.Read read,
+  ) async {
+    Future<bool> doFilter(String word) async {
+      return word.contains(controller.value.text) && await filter(ctx, word);
+    }
+
+    final unique = await Stream.fromIterable(read.getPage(read.now))
+        .map((word) => word.toLowerCase())
+        .asyncWhere((word) => doFilter(word))
+        .toSet();
+
+    final words = unique.toList()..sort();
+
+    return words.map((word) {
+      return ListTile(title: Text(word));
+    }).toList();
+  }
+
+  Widget _getPage(BuildContext context) {
+    final models.Read read = Provider.of<models.Read>(context);
+
+    final searchAnchor = SearchAnchor(
+      suggestionsBuilder: (ctx, ct) => _suggestions(ctx, ct, read),
+      builder: _buildSearchBar,
+      isFullScreen: false,
+    );
+
+    const box = SizedBox(
+      height: 30,
+    );
+
+    final page = ui.Page(
+      words: read.getPage(read.now),
+    );
+
+    return Column(
+      children: [searchAnchor, box, Expanded(child: page)],
+    );
+  }
+
+  Widget _getWidget(BuildContext context) {
+    final models.Read read = Provider.of<models.Read>(context);
+
+    final scanner = Scanner(
+      onScanned: (res) async => read.addPage(List<String>.from(res)),
+    );
 
     var text = const Text(
       style: TextStyle(color: Colors.grey),
@@ -67,9 +127,7 @@ class Read extends StatelessWidget {
     );
 
     if (read.now != read.end) {
-      return ui.Page(
-        words: read.getPage(read.now),
-      );
+      return _getPage(context);
     }
 
     return Column(
@@ -83,18 +141,6 @@ class Read extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchBar = Consumer<models.Read>(
-      builder: (context, read, child) {
-        return SearchBar(
-          onChanged: (value) => read.search = value,
-          hintText: 'Search Word',
-          leading: const Icon(
-            Icons.search_rounded,
-          ),
-        );
-      },
-    );
-
     final pagination = Consumer<models.Read>(
       builder: (ctx, read, child) {
         return Pagination(
@@ -108,17 +154,9 @@ class Read extends StatelessWidget {
       },
     );
 
-    final widget = Consumer<models.Read>(
-      builder: (ctx, read, child) {
-        return _getWidget(context, read);
-      },
-    );
-
     final items = [
       const SizedBox(height: 30),
-      searchBar,
-      const SizedBox(height: 30),
-      Expanded(child: widget),
+      Expanded(child: _getWidget(context)),
       const SizedBox(height: 10),
       pagination,
     ];
