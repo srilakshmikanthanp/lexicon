@@ -8,21 +8,22 @@ class Index extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget clickable(String char) {
+      return TextButton(
+        onPressed: () => onClick(char),
+        child: Text(
+          char,
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
+      );
+    }
+
     return GridView.count(
       padding: const EdgeInsets.all(5),
       crossAxisCount: 4,
       children: List.generate(chars.length, (index) {
         return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: GestureDetector(
-              onTap: () => onClick(chars[index]),
-              child: Text(
-                chars[index],
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-            ),
-          ),
+          child: clickable(chars[index]),
         );
       }),
     );

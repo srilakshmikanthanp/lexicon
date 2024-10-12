@@ -67,31 +67,31 @@ class _Page extends State<Page> {
       return Word(value: value, onClick: widget.onWordClick);
     }
 
+    Widget builder(context, index) {
+      return StickyHeader(
+        header: Header(
+          onClick: (_) => setState(() {
+            _isShowingIndex = true;
+          }),
+          header: keys[index],
+        ),
+        content: Column(
+          children: [
+            ...items[keys[index]]!.map(mapper),
+          ],
+        ),
+      );
+    }
+
     var list = ScrollablePositionedList.builder(
       itemScrollController: _itemScrollController,
       itemCount: keys.length,
-      itemBuilder: (context, index) {
-        return StickyHeader(
-          header: Header(
-            onClick: (_) => setState(() {
-              _isShowingIndex = true;
-            }),
-            header: keys[index],
-          ),
-          content: Column(
-            children: [
-              ...items[keys[index]]!.map(mapper),
-            ],
-          ),
-        );
-      },
+      itemBuilder: builder,
     );
 
     void scrollToValue(String value) {
-      _itemScrollController.scrollTo(
-        duration: const Duration(seconds: 1),
+      _itemScrollController.jumpTo(
         index: keys.indexOf(value),
-        curve: Curves.easeInOut,
       );
     }
 

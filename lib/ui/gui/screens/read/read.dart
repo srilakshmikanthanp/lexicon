@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lexicon/models/read/read.dart' as models;
+import 'package:lexicon/ui/gui/components/definition.dart';
 import 'package:lexicon/ui/gui/components/pagination.dart';
 import 'package:lexicon/ui/gui/components/scanner.dart';
 import 'package:lexicon/ui/gui/dialogs/dialogs.dart';
@@ -39,7 +40,9 @@ class Read extends StatelessWidget {
         );
 
         if (result) {
-          read..deletePage(read.now)..goPrev();
+          read
+            ..goPrev()
+            ..deletePage(read.now);
         }
       },
     );
@@ -56,7 +59,9 @@ class Read extends StatelessWidget {
         );
 
         if (result) {
-          read..deleteAllPages()..goStart();
+          read
+            ..goStart()
+            ..deleteAllPages();
         }
       },
     );
@@ -68,6 +73,19 @@ class Read extends StatelessWidget {
     showCupertinoModalPopup(
       context: context,
       builder: (context) => actionSheet,
+    );
+  }
+
+  void _onWordClick(BuildContext context, String word) {
+    showModalBottomSheet<void>(
+      constraints: const BoxConstraints.expand(),
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Definition(word: word),
+        );
+      },
     );
   }
 
@@ -105,7 +123,18 @@ class Read extends StatelessWidget {
     final words = unique.toList()..sort();
 
     return words.map((word) {
-      return ListTile(title: Text(word));
+      return ListTile(
+        title: TextButton(
+          style: TextButton.styleFrom(
+            alignment: Alignment.centerLeft,
+          ),
+          onPressed: () => _onWordClick(ctx, word),
+          child: Text(
+            textAlign: TextAlign.left,
+            word,
+          ),
+        ),
+      );
     }).toList();
   }
 
@@ -115,7 +144,6 @@ class Read extends StatelessWidget {
     final searchAnchor = SearchAnchor(
       suggestionsBuilder: (ctx, ct) => _suggestions(ctx, ct, read),
       builder: _buildSearchBar,
-      isFullScreen: false,
     );
 
     const box = SizedBox(
@@ -123,6 +151,7 @@ class Read extends StatelessWidget {
     );
 
     final page = ui.Page(
+      onWordClick: (word) => _onWordClick(context, word),
       words: read.getPage(read.now),
     );
 

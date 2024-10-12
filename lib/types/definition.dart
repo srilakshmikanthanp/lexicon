@@ -73,4 +73,8 @@ class Definition {
     required this.word,
     required this.meaning,
   });
+
+  bool isEmpty() {
+    return phonetics.isEmpty && meaning.isEmpty;
+  }
 }

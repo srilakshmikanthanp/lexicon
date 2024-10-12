@@ -22,7 +22,7 @@ abstract class Dictionary {
 
 /// An Implementation of Dictionary
 class ApiDict extends Dictionary {
-  List<Interpretation> _interpretation(List<Map<String, dynamic>> list) {
+  List<Interpretation> _interpretation(List<dynamic> list) {
     List<Interpretation> interpretations = [];
 
     for (var entry in list) {
@@ -35,7 +35,7 @@ class ApiDict extends Dictionary {
     return interpretations;
   }
 
-  List<Phonetic> _phonetics(List<Map<String, dynamic>> list) {
+  List<Phonetic> _phonetics(List<dynamic> list) {
     List<Phonetic> phonetics = [];
 
     for (var entry in list) {
@@ -47,7 +47,7 @@ class ApiDict extends Dictionary {
     return phonetics;
   }
 
-  Meaning _meaning(List<Map<String, dynamic>> list) {
+  Meaning _meaning(List<dynamic> list) {
     var meaning = Meaning();
 
     for (var entry in list) {
@@ -67,16 +67,29 @@ class ApiDict extends Dictionary {
 
   @override
   Future<Definition> define(String word) async {
-    const String host = 'https://api.dictionaryapi.dev';
-    var fetchUrl = Uri.http(host, _buildFetchUrl(word));
+    const String host = 'api.dictionaryapi.dev';
+    var fetchUrl = Uri.https(host, _buildFetchUrl(word));
     var res = await http.get(fetchUrl);
-    var json = jsonDecode(res.body) as Map<String, dynamic>;
-    var phonetics = json['phonetics'];
-    var meanings = json['meanings'];
+    var list = jsonDecode(res.body);
+    var definition = Definition.empty(word: word);
 
-    return Definition(
-        phonetics: _phonetics(phonetics),
-        word: word,
-        meaning: _meaning(meanings));
+    if(list is! List<dynamic>) {
+      return definition;
+    }
+
+    for(var json in list) {
+      final phonetics = json['phonetics'];
+      final meanings = json['meanings'];
+
+      if(phonetics != null) {
+        definition.phonetics.addAll(_phonetics(phonetics));
+      }
+
+      if(meanings != null) {
+        definition.meaning.addAll(_meaning(meanings));
+      }
+    }
+
+    return definition;
   }
 }
