@@ -23,10 +23,11 @@ class _EmptyDefinition extends StatelessWidget {
     final button = ElevatedButton(
       onPressed: () => onSearch?.call(word),
       style: buttonStyle,
-      child: const Icon(Icons.language),
+      child: const Icon(Icons.search),
     );
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
         const Text("Sorry We Couldn't found meaning!"),
@@ -193,16 +194,29 @@ class _Definition extends State<Definition> {
       definition.data!.word,
     );
 
+    final search = TextButton(
+      onPressed: () => widget.onSearch?.call(widget.word),
+      child: const Icon(Icons.search),
+    );
+
     final meanings = _getMeanings(
       context,
       definition.data!,
+    );
+
+    final heading = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        word,
+        search,
+      ],
     );
 
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [word, const Divider(), meanings],
+        children: [heading, const Divider(), meanings],
       ),
     );
   }

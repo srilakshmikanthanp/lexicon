@@ -4,11 +4,13 @@ import 'package:lexicon/models/read/read.dart' as models;
 import 'package:lexicon/ui/gui/components/definition.dart';
 import 'package:lexicon/ui/gui/components/pagination.dart';
 import 'package:lexicon/ui/gui/components/scanner.dart';
+import 'package:lexicon/ui/gui/components/word.dart';
 import 'package:lexicon/ui/gui/dialogs/dialogs.dart';
 import 'package:lexicon/ui/gui/screens/read/page.dart' as ui;
 import 'package:lexicon/utility/extensions.dart';
 import 'package:lexicon/utility/functions.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Read extends StatelessWidget {
   void _onPageClick(BuildContext context, models.Read read) {
@@ -79,14 +81,22 @@ class Read extends StatelessWidget {
   void _onWordClick(BuildContext context, String word) {
     showModalBottomSheet<void>(
       constraints: const BoxConstraints.expand(),
+      enableDrag: false,
       context: context,
       builder: (context) {
         return Padding(
           padding: const EdgeInsets.all(16),
-          child: Definition(word: word),
+          child: Definition(
+            onSearch: (word) => _searchWeb(word),
+            word: word,
+          ),
         );
       },
     );
+  }
+
+  Future<void> _searchWeb(String query) async {
+    await launchUrl(Uri.parse('https://www.google.com/search?q=$query'));
   }
 
   const Read({super.key});
@@ -124,15 +134,9 @@ class Read extends StatelessWidget {
 
     return words.map((word) {
       return ListTile(
-        title: TextButton(
-          style: TextButton.styleFrom(
-            alignment: Alignment.centerLeft,
-          ),
-          onPressed: () => _onWordClick(ctx, word),
-          child: Text(
-            textAlign: TextAlign.left,
-            word,
-          ),
+        title: Word(
+          onClick: (word) => _onWordClick(ctx, word),
+          value: word,
         ),
       );
     }).toList();
